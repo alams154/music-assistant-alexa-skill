@@ -14,13 +14,23 @@ const https = require('https');
 // Define global variables for hostnames
 const API_HOSTNAME = '<DEFINE-YOUR-API-HOSTNAME-HERE>'; // Replace with your API hostname
 const MA_HOSTNAME  = '<DEFINE-YOUR-MA-HOSTNAME-HERE>';  // Replace with your Music Assistant hostname
+const API_USERNAME = undefined; //Replace with your username
+const API_PASSWORD = undefined; //Replace with your password
 
 function getLatestUrl() {
     return new Promise((resolve, reject) => {
+        const headers = {};
+
+        if (API_USERNAME !== undefined && API_PASSWORD !== undefined) {
+            const auth = Buffer.from(`${API_USERNAME}:${API_PASSWORD}`).toString('base64');
+            headers['Authorization'] = `Basic ${auth}`;
+        }
+
         const options = {
             hostname: API_HOSTNAME,
             path: '/ma/latest-url',
             method: 'GET'
+            headers: headers,
         };
 
         const req = https.request(options, (res) => {
